@@ -15,4 +15,7 @@ router.post('/accounts/:id/transfer', walletController.transferFunds);
 // Withdraw funds from an account
 router.post('/accounts/:id/withdraw', walletController.withdrawFunds);
 
+// Get account balance
+router.post('/accounts/:id/balance', walletController.getAccountBalance);
+
 export default router;
