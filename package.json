@@ -8,12 +8,10 @@
     "chai-http": "^4.4.0",
     "db": "^4.0.1",
     "express": "^4.17.1",
-    "faker": "^6.6.6",
     "knex": "^0.95.15",
     "mongoose": "^7.3.0",
     "mysql2": "^2.3.0",
-    "sinon": "^15.1.2",
-    "supertest": "^6.3.3"
+    "sinon": "^15.1.2"
   },
   "devDependencies": {
     "@types/chai": "^4.3.5",
