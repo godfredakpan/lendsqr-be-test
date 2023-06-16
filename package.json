@@ -1,9 +1,11 @@
 {
   "name": "lendsqr-app",
   "version": "1.0.0",
-  "description": "Test for backend engineering candidates",
+  "description": "Test for backend engineering candidate: Godfred Akpan",
   "dependencies": {
     "@faker-js/faker": "^8.0.2",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.1.0",
     "chai": "^4.3.7",
     "chai-http": "^4.4.0",
     "db": "^4.0.1",

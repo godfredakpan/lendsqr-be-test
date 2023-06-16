@@ -1,18 +1,104 @@
-## lendsqr-app
-In this repo lies the test for backend engineering position for lendsqr
+# lendsqr-app
+## Test for backend engineering candidate: Godfred Akpan
 
-### Author : Godfred Akpan
+*Getting Started*
 
-### `MySQL configuration`
-Please create database and make the changes in the `config/db.ts` file.
+To get started with the Wallet App API, follow the instructions below.
 
-In the project directory, you can run:
+### Prerequisites
+<li>Node.js v16.17.0 above
+<li>MySQL database
 
-### `npm install` OR `yarn install`
+### Installation
 
-This will install the dependencies inside `node_modules`
+<li>Clone repository: 
 
-### `node server.js` OR `nodemon start` OR `npm start` OR `yarn start`
+<code> git clone https://github.com/godfredakpan/lendsqr-be-test </code>
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser or postman
+<li>Install the dependencies:
+
+<code> cd lendsqr-be-test</code><br>
+<code> npm install || yarn install</code>
+
+
+<li>Setup database:
+
+Create a MySQL database.<br>
+Update the database connection details in the `config/db.js` file.
+
+<li>Set up environment variables:
+
+Create a `.env` file in the project root directory.
+
+Define the required environment variables in the `.env` file. 
+
+For example:
+<code>
+PORT=3000
+DB_HOST=localhost
+DB_USER=root
+DB_PASSWORD=your-db-password
+DB_DATABASE=wallet_db
+</code>
+
+<li>Start the API server:
+
+`npm start || yarn start`
+
+The API server will be running at http://localhost:3000
+
+##
+## API Documentation
+
+User Accounts
+
+#### Create an Account
+
+URL: `/api/accounts/create`
+
+Method: `POST`
+
+Request Body: `{ "id": "user123" }`
+
+Response: `{ "message": "Account created successfully"
+}`
+
+------
+
+#### Create an Account
+
+URL: `/api/accounts/create`
+
+Method: `POST`
+
+Request Body: `{ "id": "user123" }`
+
+Response: `{ "message": "Account created successfully"
+}`
+
+------
+#### Create an Account
+
+URL: `/api/accounts/create`
+
+Method: `POST`
+
+Request Body: `{ "id": "user123" }`
+
+Response: `{ "message": "Account created successfully"
+}`
+
+------
+
+#### Create an Account
+
+URL: `/api/accounts/create`
+
+Method: `POST`
+
+Request Body: `{ "id": "user123" }`
+
+Response: `{ "message": "Account created successfully"
+}`
+
+------

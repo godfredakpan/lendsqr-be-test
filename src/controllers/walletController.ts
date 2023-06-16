@@ -1,14 +1,18 @@
 import { Request, Response } from 'express';
 import knex from '../config/db';
+import bcrypt from 'bcrypt';
 import { Account } from '../interface/account.interface';
 import { createErrorResponse, createSuccessResponse } from '../helper/response';
+import { UserAccountModel } from '../models/userAccount';
 
 
 // Create an account
 export const createAccount = async (req: Request, res: Response) => {
-  const { id } = req.body;
+  const { id, pin } = req.body;
 
   if (!id) return createErrorResponse(res,'Missing required parameter: id', 400);
+
+  if (!pin) return createErrorResponse(res,'Missing required parameter: pin', 400);
 
   knex('user_accounts')
     .where({ id })
@@ -18,8 +22,12 @@ export const createAccount = async (req: Request, res: Response) => {
         return createErrorResponse(res,'Account already exists', 400);
       }
 
+      if (!UserAccountModel.comparePin(pin, account.pin)) {
+        return createErrorResponse(res,'Invalid pin', 400);
+      }
+
       knex('user_accounts')
-        .insert({ id, balance: 0 })
+        .insert({ id, balance: 0, pin })
         .then(() => {
           return createSuccessResponse(res,'Account created successfully');
         })
@@ -35,7 +43,11 @@ export const createAccount = async (req: Request, res: Response) => {
 // Fund an account
 export const fundAccount = async (req: Request, res: Response) => {
   const { id } = req?.params;
-  const { amount } = req.body;
+  const { amount, pin } = req.body;
+  
+  if (!pin) {
+    return createErrorResponse(res,'Missing required parameter: pin', 400);
+  }
 
   if (!id) {
     return createErrorResponse(res,'Missing required parameter: id', 400);
@@ -57,6 +69,10 @@ export const fundAccount = async (req: Request, res: Response) => {
       return createErrorResponse(res,'User does not exist', 400);
     }
 
+    if (!UserAccountModel.comparePin(pin, account.pin)) {
+      return createErrorResponse(res,'Invalid pin', 400);
+    }
+
     knex('user_accounts')
       .where({ id })
       .increment('balance', amount)
@@ -76,7 +92,11 @@ export const fundAccount = async (req: Request, res: Response) => {
 // Transfer funds between accounts
 export const transferFunds = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { recipientId, amount } = req.body;
+  const { recipientId, amount, pin } = req.body;
+
+  if (!pin) {
+    return createErrorResponse(res,'Missing required parameter: pin', 400);
+  }
 
   if (!recipientId) {
     return createErrorResponse(res,'Missing required parameter: recipientId', 400);
@@ -105,6 +125,10 @@ export const transferFunds = async (req: Request, res: Response) => {
     .then((account: Account | undefined) => {
       if (!account) {
         return createErrorResponse(res,'User does not exist', 400);
+      }
+
+      if (!UserAccountModel.comparePin(pin, account.pin)) {
+        return createErrorResponse(res,'Invalid pin', 400);
       }
 
       if (account.balance < amount) {
@@ -137,7 +161,11 @@ export const transferFunds = async (req: Request, res: Response) => {
 // Withdraw funds from an account
 export const withdrawFunds = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { amount } = req.body;
+  const { amount, pin } = req.body;
+
+  if (!pin) {
+    return createErrorResponse(res,'Missing required parameter: pin', 400);
+  }
 
   if (!amount) {
     return createErrorResponse(res,'Missing required parameter: amount', 400);
@@ -169,4 +197,87 @@ export const withdrawFunds = async (req: Request, res: Response) => {
       return createErrorResponse(res,'Failed to withdraw funds', 500);
     });
   })
+
+  
 };
+
+export const getAccountBalance = async (req: Request, res: Response) => {
+  const { id, pin } = req.params;
+
+  if (!pin) {
+    return createErrorResponse(res,'Missing required parameter: pin', 400);
+  }
+
+  if (!id) {
+    return createErrorResponse(res,'Missing required parameter: id', 400);
+  }
+
+  knex('user_accounts')
+  .where({ id })
+  .first()
+  .then((account: Account) => {
+    if (!account) {
+      return createErrorResponse(res,'User does not exist', 400);
+    }
+
+    if (!UserAccountModel.comparePin(pin, account.pin)) {
+      return createErrorResponse(res,'Invalid pin', 400);
+    }
+
+    return createSuccessResponse(res,`Your account balance is ${account.balance}`);
+  })
+  .catch((error: any) => {
+    return createErrorResponse(res,error.message || 'Internal server error', 500);
+  });
+
+}
+
+export const setTransactionPin = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { pin } = req.body;
+
+  if (!id) {
+    return createErrorResponse(res,'Missing required parameter: id', 400);
+  }
+
+  if (!pin) {
+    return createErrorResponse(res,'Missing required parameter: pin', 400);
+  }
+
+  if (typeof pin !== 'number') {
+    return createErrorResponse(res,'Pin must be a number', 400);
+  }
+
+  const saltRounds = 10;
+
+  const pinString = pin.toString();
+
+  const salt = await bcrypt.genSalt(saltRounds);
+
+  const hashedPIN = await bcrypt.hash(pinString, salt);
+
+  knex('user_accounts')
+  .where({ id })
+  .first()
+  .then((account: Account) => {
+    if (!account) {
+      return createErrorResponse(res,'User does not exist', 400);
+    }
+
+    knex('user_accounts')
+    .where({ id })
+    .update({ pin: hashedPIN })
+    .then(() => {
+      return createSuccessResponse(res,'Pin set successfully');
+    })
+    .catch(() => {
+      return createErrorResponse(res,'Failed to set pin', 500);
+    });
+  }
+  )
+  .catch((error: any) => {
+    return createErrorResponse(res,error.message || 'Internal server error', 500);
+  }
+  );
+
+}
