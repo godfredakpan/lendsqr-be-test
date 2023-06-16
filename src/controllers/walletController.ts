@@ -202,7 +202,8 @@ export const withdrawFunds = async (req: Request, res: Response) => {
 };
 
 export const getAccountBalance = async (req: Request, res: Response) => {
-  const { id, pin } = req.params;
+  const { id } = req.params;
+  const { pin } = req.body;
 
   if (!pin) {
     return createErrorResponse(res,'Missing required parameter: pin', 400);

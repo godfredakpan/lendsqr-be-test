@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { createAccount, fundAccount, transferFunds, withdrawFunds } from './walletController';
+import { createAccount, fundAccount, transferFunds, withdrawFunds, getAccountBalance } from './walletController';
 import { Request, Response } from 'express';
 import sinon from 'sinon';
 
@@ -9,10 +9,31 @@ describe('Wallet Controller', () => {
   });
   
   describe('createAccount', () => {
+    it('should return an error if pin parameter is missing', async () => {
+      const req = {
+        body: {
+          id: 'yourAccountId',
+        },
+      } as Request;
+
+      const res = {
+        status: (code: number) => ({
+          json: (data: any) => {
+            expect(code).to.equal(400);
+            expect(data.error).to.equal('Missing required parameter: pin');
+          },
+        }),
+      } as Response;
+
+      await createAccount(req, res);
+    });
+
+
     it('should create an account successfully', async () => {
       const req = {
         body: {
           id: 'yourAccountId',
+          pin: 'yourPin',
         },
       } as Request;
 
@@ -54,6 +75,7 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
+          pin: 'yourPin',
         },
       } as unknown as Request;
 
@@ -69,6 +91,30 @@ describe('Wallet Controller', () => {
       await fundAccount(req, res);
     });
 
+    it('should return an error if pin is incorrect', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          amount: 100,
+          pin: 'incorrectPin'
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: (code: number) => ({
+          json: (data: any) => {
+            console.log(data);
+            expect(code).to.equal(400);
+            expect(data.error).to.equal('Invalid pin');
+          },
+        }),
+      } as Response;
+
+      await fundAccount(req, res);
+    });
+
 
     it('should fund an account successfully', async () => {
       const req = {
@@ -77,6 +123,7 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
+          pin: 'yourPin',
         },
       } as unknown as Request;
       
@@ -95,7 +142,9 @@ describe('Wallet Controller', () => {
 
     it('should return an error if id parameter is missing', async () => {
       const req = {
-        body: {},
+        body: {
+          pin: 'yourPin',
+        },
         params: { id: null },
       } as unknown as Request;
 
@@ -114,7 +163,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is missing', async () => {
       const req = {
-        body: { amount: null },
+        body: { amount: null, pin: 'yourPin' },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -133,7 +182,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is not a number', async () => {
       const req = {
-        body: { amount: 'notANumber', recipientId: 'recipientId' },
+        body: { amount: 'notANumber', recipientId: 'recipientId', pin: 'yourPin' },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -159,7 +208,8 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
-          recipientId: 'recipientId'
+          recipientId: 'recipientId',
+          pin: 'yourPin',
         },
       } as unknown as Request;
 
@@ -182,7 +232,8 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
-          recipientId: 'recipientId'
+          recipientId: 'recipientId',
+          pin: 'yourPin',
         },
       } as unknown as Request;
 
@@ -206,7 +257,8 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
-          recipientId: 'recipientId'
+          recipientId: 'recipientId',
+          pin: 'yourPin',
         },
       } as unknown as Request;
       
@@ -230,7 +282,8 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
-          recipientId: 'recipientId'
+          recipientId: 'recipientId',
+          pin: 'yourPin',
         },
       } as unknown as Request;
       
@@ -251,7 +304,8 @@ describe('Wallet Controller', () => {
       const req = {
         body: {
           amount: 100,
-          recipientId: 'recipientId'
+          recipientId: 'recipientId',
+          pin: 'yourPin',
         },
         params: { id: null },
       } as unknown as Request;
@@ -270,7 +324,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is missing', async () => {
       const req = {
-        body: { amount: null, recipientId: 'recipientId' },
+        body: { amount: null, recipientId: 'recipientId', pin: 'yourPin', },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -289,7 +343,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if recipientId parameter is not present', async () => {
       const req = {
-        body: { amount: 200, recipientId: null },
+        body: { amount: 200, recipientId: null, pin: 'yourPin', },
         params: { id: 'yourAccountId', },
       } as unknown as Request;
 
@@ -308,7 +362,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is not a number', async () => {
       const req = {
-        body: { amount: 'notANumber', recipientId: 'recipientId' },
+        body: { amount: 'notANumber', recipientId: 'recipientId', pin: 'yourPin', },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -336,6 +390,7 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
+          pin: 'yourPin',
         },
       } as unknown as Request;
 
@@ -360,6 +415,7 @@ describe('Wallet Controller', () => {
         },
         body: {
           amount: 100,
+          pin: 'yourPin',
         },
       } as unknown as Request;
       
@@ -380,6 +436,7 @@ describe('Wallet Controller', () => {
       const req = {
         body: {
           amount: 100,
+          pin: 'yourPin',
         },
         params: { id: null },
       } as unknown as Request;
@@ -398,7 +455,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is missing', async () => {
       const req = {
-        body: { amount: null },
+        body: { amount: null, pin: 'yourPin', },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -417,7 +474,7 @@ describe('Wallet Controller', () => {
 
     it('should return an error if amount parameter is not a number', async () => {
       const req = {
-        body: { amount: 'notANumber' },
+        body: { amount: 'notANumber', pin: 'yourPin', },
         params: { id: 'yourAccountId' },
       } as unknown as Request;
 
@@ -431,6 +488,69 @@ describe('Wallet Controller', () => {
       } as Response;
 
       await withdrawFunds(req, res);
+    });
+  });
+
+
+  describe('checkBalance', () => {
+    it('should return an error if pin is incorrect', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          pin: 'incorrectPin'
+        },
+      } as unknown as Request;
+
+      const res = {
+        json: (data: any) => {
+          console.log(data);
+          expect(data.error).to.equal('Invalid pin');
+        },
+      } as Response;
+
+      await getAccountBalance(req, res);
+    });
+
+
+    it('should return an error if account does not exist', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          pin: 'yourPin',
+        },
+      } as unknown as Request;
+
+      const res = {
+        json: (data: any) => {
+          expect(data.error).to.equal('User not found');
+        },
+      } as Response;
+
+      await getAccountBalance(req, res);
+    });
+
+    it('should return account balance successfully', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          pin: 'yourPin',
+        },
+      } as unknown as Request;
+      
+
+      const res = {
+        json: (data: any) => {
+          expect(data.balance).to.equal(0);
+        },
+      } as Response;
+
+      await getAccountBalance(req, res);
     });
   });
 });
