@@ -1,16 +1,13 @@
 import knex  from '../config/db';
+import { Account } from '../interface/account.interface';
 
-interface UserAccount {
-  id: string;
-  balance: number;
-}
 
 export const UserAccountModel = {
-  async create(userAccount: UserAccount): Promise<void> {
+  async create(userAccount: Account): Promise<void> {
     await knex('user_accounts').insert(userAccount);
   },
 
-  async findById(id: string): Promise<UserAccount | null> {
+  async findById(id: string): Promise<Account | null> {
     return knex('user_accounts').where({ id }).first();
   },
 

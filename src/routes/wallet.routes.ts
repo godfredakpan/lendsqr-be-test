@@ -4,7 +4,7 @@ import * as walletController from '../controllers/walletController';
 const router = express.Router();
 
 // Create an account
-router.post('/accounts', walletController.createAccount);
+router.post('/accounts/create', walletController.createAccount);
 
 // Fund an account
 router.post('/accounts/:id/fund', walletController.fundAccount);

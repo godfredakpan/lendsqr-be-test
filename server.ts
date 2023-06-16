@@ -10,6 +10,6 @@ app.use(express.json());
 app.use('/api', walletRoutes);
 
 // Start the server
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
+app.listen(6000, () => {
+  console.log('Server running on port 6000');
 });

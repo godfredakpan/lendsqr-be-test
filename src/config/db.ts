@@ -1,12 +1,13 @@
-import knex from 'knex';
+// import knex from 'knex';
 
-const db = knex({
+
+const db = require('knex')({
   client: 'mysql2',
   connection: {
-    host: 'localhost',
-    user: 'lend_test_username',
-    password: 'lend_test_password',
-    database: 'lend_test_database',
+    host: '127.0.0.1',
+    user: 'root',
+    password: 'megatron007',
+    database: 'lendr',
   },
 });
 
