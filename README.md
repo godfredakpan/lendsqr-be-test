@@ -28,6 +28,9 @@ Create a MySQL database.<br>
 Update the database connection details in the `config/db.js` file.<br>
 Migrate DB by running <code>knex migrate:latest</code>
 
+<img width="369" alt="image" src="https://github.com/godfredakpan/lendsqr-be-test/assets/31159357/d6007272-5e50-47b7-9cb8-a98ca3d85114">
+
+
 <li>Set up environment variables:
 
 Create a `.env` file in the project root directory.
