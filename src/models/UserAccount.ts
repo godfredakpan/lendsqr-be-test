@@ -21,6 +21,7 @@ export const UserAccountModel = {
     return account.pin;
   },
 
+
   async comparePin(pin: string, hashedPin: string): Promise<boolean> {
     return bcrypt.compare(pin, hashedPin);
   }

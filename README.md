@@ -8,6 +8,7 @@ To get started with the Wallet App API, follow the instructions below.
 ### Prerequisites
 <li>Node.js v16.17.0 above
 <li>MySQL database
+<li>KnexJs
 
 ### Installation
 
@@ -18,13 +19,14 @@ To get started with the Wallet App API, follow the instructions below.
 <li>Install the dependencies:
 
 <code> cd lendsqr-be-test</code><br>
-<code> npm install || yarn install</code>
+<code> npm install || yarn install ...AND npm install knex -g</code>
 
 
 <li>Setup database:
 
 Create a MySQL database.<br>
-Update the database connection details in the `config/db.js` file.
+Update the database connection details in the `config/db.js` file.<br>
+Migrate DB by running <code>knex migrate:latest</code>
 
 <li>Set up environment variables:
 
@@ -50,55 +52,4 @@ The API server will be running at http://localhost:3000
 ##
 ## API Documentation
 
-User Accounts
-
-#### Create an Account
-
-URL: `/api/accounts/create`
-
-Method: `POST`
-
-Request Body: `{ "id": "user123" }`
-
-Response: `{ "message": "Account created successfully"
-}`
-
-------
-
-#### Create an Account
-
-URL: `/api/accounts/create`
-
-Method: `POST`
-
-Request Body: `{ "id": "user123" }`
-
-Response: `{ "message": "Account created successfully"
-}`
-
-------
-#### Create an Account
-
-URL: `/api/accounts/create`
-
-Method: `POST`
-
-Request Body: `{ "id": "user123" }`
-
-Response: `{ "message": "Account created successfully"
-}`
-
-------
-
-#### Create an Account
-
-URL: `/api/accounts/create`
-
-Method: `POST`
-
-Request Body: `{ "id": "user123" }`
-
-Response: `{ "message": "Account created successfully"
-}`
-
-------
+https://documenter.getpostman.com/view/23218164/2s93sjT8N3

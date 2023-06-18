@@ -225,6 +225,31 @@ describe('Wallet Controller', () => {
       await transferFunds(req, res);
     });
 
+    it('should return an error if recipient account does not exist', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          amount: 100,
+          recipientId: 'recipientId',
+          pin: 'yourPin',
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: (code: number) => ({
+          json: (data: any) => {
+            console.log(data);
+            expect(code).to.equal(400);
+            expect(data.error).to.equal('Recipient account not found');
+          },
+        }),
+      } as Response;
+
+      await transferFunds(req, res);
+    });
+
     it('should return an error if account does not have sufficient funds', async () => {
       const req = {
         params: {
@@ -249,7 +274,7 @@ describe('Wallet Controller', () => {
       await transferFunds(req, res);
     });
 
-    // cant transfer to self
+
     it('should return an error if recipientId is the same as the sender', async () => {
       const req = {
         params: {
@@ -382,7 +407,7 @@ describe('Wallet Controller', () => {
   });
 
   describe('withdrawFunds', () => {
-    // check if account has sufficient funds
+
     it('should return an error if account does not have sufficient funds', async () => {
       const req = {
         params: {
@@ -400,6 +425,30 @@ describe('Wallet Controller', () => {
             console.log(data);
             expect(code).to.equal(400);
             expect(data.error).to.equal('Insufficient funds');
+          },
+        }),
+      } as Response;
+
+      await withdrawFunds(req, res);
+    });
+
+    it('should return an error if pin is incorrect', async () => {
+      const req = {
+        params: {
+          id: 'yourAccountId',
+        },
+        body: {
+          amount: 100,
+          pin: 'yourPin',
+        },
+      } as unknown as Request;
+
+      const res = {
+        status: (code: number) => ({
+          json: (data: any) => {
+            console.log(data);
+            expect(code).to.equal(400);
+            expect(data.error).to.equal('Invalid pin');
           },
         }),
       } as Response;
