@@ -3,7 +3,6 @@ import knex from '../config/db';
 import bcrypt from 'bcrypt';
 import { Account } from '../interface/account.interface';
 import { createErrorResponse, createSuccessResponse } from '../helper/response';
-import { UserAccountModel } from '../models/userAccount';
 
 
 export const createAccount = async (req: Request, res: Response) => {
